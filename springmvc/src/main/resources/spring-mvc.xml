@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="GBK"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+    <!--映射器-->
+        <!--handlerMapping:url与控制器的映谢
+        有三种分别是：
+        1、BeanNameUrlHandlerMapping
+            根据ben的名字来匹配url，找到对应的handler
+        2、SimpleUrlHandlerMapping
+            根据手动配置url与handler的映射
+        3、RequestMappingHandlerMapping
+            基于@RequestMapping注解配置对应映谢-->
+
+        <!--1、根据bean的名称来匹配url，这里bean的名字为/user ，则当url为/user的时候，会用UserController的handler进行处理-->
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"/>
+
+        <!-- 2、url映谢器
+            根据urlMap里配置的参数来匹配handler,这里的url为/user1。-->
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <props>
+                <prop key="/user1">user1Controller</prop>
+            </props>
+        </property>
+    </bean>
+
+        <!--3、根据@RequestMapping注解配置对应映谢
+            改配置的作用是对cn.bupt.springmvc.handler包下的文件进行扫描，扫描具有
+            @RequestMapping的类或方法，并且会自动对RequestMappingHandlerMapping映射器与
+        RequestMappingHandlerAdapter适配器进行注册-->
+    <context:component-scan base-package="cn.bupt.springmvc.handler"/>
+    <!-- 注解驱动，作用是将试图转换为Json -->
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+    <!--handler-->
+    <!--handler有4种实现
+        1、实现controller接口（不太常用）
+        2、实现HttpRequestHandler接口（不太常用）
+        3、继承HttpServlet （非常不常用）
+        4、@requestMapping注解（常用）-->
+    <!--1、实现controller接口-->
+    <bean name="/user"  id="userController" class="cn.bupt.springmvc.handler.controller.UserController"/>
+    <!--2、实现HttpRequestHandler接口-->
+    <bean name="/uer1" id="user1Controller" class="cn.bupt.springmvc.handler.http_request_handler.UserRequestHandler"/>
+
+
+    <!-- 执行适配器-->
+        <!--适配器负责对对应的handler进行处理，一种handler对应一种handlerAdapter,对应关系为
+            Controller  ==========>	 SimpleControllerHandlerAdapter
+            HttpRequestHandler  ==========> 	HttpRequestHandlerAdapter
+            Servlet  ==========>	SimpleServletHandlerAdapter
+            HandlerMethod  ==========> 	RequestMappingHandlerAdapter
+        -->
+
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+
+
+
+
+
+    <!--资源解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/page/"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+    </bean>
+
+
+</beans>

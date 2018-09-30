@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd"
+       default-lazy-init="true">
+
+    <!--非构造方法创建-->
+    <!--<bean name="user1" id="user1" class="cn.bupt.spring.ioc.UserService"/>-->
+
+    <!--构造方法创建-->
+    <!--<bean name="user2" id="user2" class="cn.bupt.spring.ioc.UserService">
+        <constructor-arg index="0" type="java.lang.Integer" value="1"/>
+        <constructor-arg name="name" type="java.lang.String" value="lichong"/>
+    </bean>-->
+
+    <!--静态工厂方法创建-->
+    <!--<bean class="cn.bupt.spring.ioc.UserFactory" factory-method="buildUser">
+        <constructor-arg name="id" value="1"/>
+        <constructor-arg name="name" value="lichong"/>
+    </bean>-->
+
+    <!--非静态方法创建-->
+    <!--<bean class="cn.bupt.spring.ioc.UserFactory" id="userFactory"/>
+
+    <bean factory-bean="userFactory" factory-method="getInstance">
+        <constructor-arg name="id" value="2"/>
+        <constructor-arg name="name" value="lichong"/>
+    </bean>-->
+
+    <!--FactoryBean 创建-->
+    <!--<bean class="cn.bupt.spring.ioc.UserFactoryBean">
+        <property name="id" value="10"/>
+        <property name="name" value="lichong"/>
+    </bean>-->
+
+    <bean name="pageDao" class="cn.bupt.spring.ioc.PageDao" scope="prototype"/>
+
+    <!--通过set方式注入pageDao-->
+    <!--<bean name="pageService" class="cn.bupt.spring.ioc.PageService">
+        <property name="pageDao" ref="pageDao"/>
+    </bean>-->
+
+    <!--通过构造方法依赖注入pageDao-->
+    <!--<bean name="pageService" class="cn.bupt.spring.ioc.PageService">
+        <constructor-arg name="pageDao" ref="pageDao"/>
+    </bean>-->
+
+    <bean name="pageService" class="cn.bupt.spring.ioc.PageService" autowire="byType"/>
+
+    <bean name="pageServieInject" class="cn.bupt.spring.ioc.PageServiceInject">
+        <lookup-method name="getPageDao" bean="pageDao"/>
+    </bean>
+
+</beans>
